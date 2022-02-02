@@ -1,0 +1,53 @@
+Last login: Mon Mar 22 15:30:40 on ttys003
+(base) matt@Matthews-MBP ~ % sqlite
+zsh: command not found: sqlite
+(base) matt@Matthews-MBP ~ % sqlite3
+SQLite version 3.35.1 2021-03-15 16:53:57
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite> .open miami.db
+sqlite> select count(distinct id) 
+from nodes;
+1006431
+sqlite> select count(distinct id) 
+from ways;
+130411
+sqlite> SELECT COUNT(DISTINCT(e.uid))          
+FROM (SELECT uid FROM nodes UNION ALL SELECT uid FROM ways) e;
+1044
+sqlite> select count(distinct id) from nodes_tags where value = 'restaurant';
+185
+sqlite> select value, count(distinct id)
+   ...> from nodes_tags
+   ...> where key = 'amenity'
+   ...> group by 1 
+   ...> order by 2 desc
+   ...> limit 5;
+school|268
+restaurant|185
+kindergarten|134
+parking_entrance|112
+bicycle_parking|104
+sqlite> with addresses as (
+   ...> select *
+   ...> from nodes a
+   ...> inner join
+   ...> nodes_tags b
+   ...> on a.id = b.id
+   ...> where b.type = 'addr'
+   ...> )
+   ...> 
+   ...> select user, count(distinct id) as num_addresses
+   ...> from addresses group by 1
+   ...> order by 2 desc
+   ...> limit 8;
+jlevente_imports|14419
+mangokm40_import|5666
+LeifRasmussen_import|3866
+houston_mapper1|1634
+jlevente|725
+Ian Linder Sheldon_import|498
+daniel_solow|384
+drynwk|285
+sqlite> 
